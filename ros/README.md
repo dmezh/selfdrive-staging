@@ -24,6 +24,18 @@ echo $ROS_PACKAGE_PATH
 # you should get something like {your-catkin-path}/catkin_ws/src:/opt/ros/kinetic/share
 ```
 
-### CARLA ROS Bridge install
-https://carla.readthedocs.io/projects/ros-bridge/en/latest/ros_installation_ros1/
-use the source repository
+### Gazebo install
+http://gazebosim.org/tutorials?tut=install_ubuntu&cat=install
+
+
+### Gazebo + ROS integration
+http://gazebosim.org/tutorials?tut=ros_installing
+
+
+### TurtleBot3
+https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/
+
+
+### Reference Repos
+https://github.com/robustify/igvc_self_drive_sim
+https://github.com/westpoint-robotics/AY21_IGVC/tree/master/catkin_ws
