@@ -8,7 +8,7 @@ struct PWM {
 
   // ledc_ are all for the Arduino PWM interface 
   int ledc_channel; 
-  int ledc_freq;
+  int ledc_freq;    // max freq = 80000000/2*resolution
   int ledc_resolution;
 };
 
@@ -17,8 +17,8 @@ struct PWM pwm1 = {
     .r1 = 0.5, .r2 = 2.5,
     .offset = 0,
     .ledc_channel = 0,
-    .ledc_freq = 10000,
-    .ledc_resolution = 8
+    .ledc_freq = 156250,
+    .ledc_resolution = 9
 };
 
 struct PWM pwm2 = {
@@ -26,8 +26,8 @@ struct PWM pwm2 = {
     .r1 = 1.5, .r2 = 4.5,
     .offset = 0.37, 
     .ledc_channel = 2,
-    .ledc_freq = 10000,
-    .ledc_resolution = 8
+    .ledc_freq = 156250,
+    .ledc_resolution = 9
 };
 
 // percet is assumed to be 0 - 100
