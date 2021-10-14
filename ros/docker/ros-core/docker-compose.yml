@@ -1,9 +1,5 @@
 version: '2'
 
-networks:
-    ros:
-        driver: bridge
-
 services:
     ros-master:
         image: ros:noetic-ros-core
@@ -24,14 +20,18 @@ services:
       - ros
     restart: always
 
-  listener:
-    image: ros:kinetic-ros-core
+    listener:
+        image: ros:kinetic-ros-core
     depends_on:
-      - ros-master
+        - ros-master
     environment:
-      - "ROS_MASTER_URI=http://ros-master:11311"
-      - "ROS_HOSTNAME=listener"
+        - "ROS_MASTER_URI=http://ros-master:11311"
+        - "ROS_HOSTNAME=listener"
     command: stdbuf -o L rostopic echo /chatter
     networks:
-      - ros
+        - ros
     restart: always
+
+networks:
+    ros:
+        driver: bridge
