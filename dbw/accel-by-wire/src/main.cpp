@@ -1,16 +1,6 @@
 #include <Arduino.h>
 
-// Struct for aggregating information about the particular PWM pin
-struct PWM {
-  int pin;
-  float r1, r2;   // voltage ranges for PWM signal (eg. 0.5v to 2.5v)
-  float offset;   // offset 
-
-  // ledc_ are all for the Arduino PWM interface 
-  int ledc_channel; 
-  int ledc_freq;    // max freq = 80000000/2*resolution
-  int ledc_resolution;
-};
+#include "pwm.h"
 
 struct PWM pwm1 = {
     .pin = 5,
@@ -30,27 +20,49 @@ struct PWM pwm2 = {
     .ledc_resolution = 9
 };
 
-// percet is assumed to be 0 - 100
-void pwm_percent(struct PWM pwm, float vdd, float percent) {
-  float voltage = (percent/100.0) * (pwm.r2 - pwm.r1) + (pwm.r1 + pwm.offset); 
-  int pwm_level = voltage * (256.0/vdd);
+// Example command: "p1:56.7%"
+// that sets pwm1 to 56.7%
+void parse_cmd(char *cmd_buff, size_t len) { 
+  char pin[4] = {0};
+  char percent[8] = {0};
+  size_t i, j;  // i: index local buffer, j: index cmd_buff
 
-  Serial.print("Accel throttle: "); 
-  Serial.print(percent);
-  Serial.println("%");
+  // get pin from cmd_buff
+  for (i = 0, j = 0; i < sizeof(pin)-1 && j < len; i++, j++) { 
+    if (cmd_buff[j] == ':'){ 
+      j++;
+      break;
+    }
+    pin[i] = cmd_buff[j];
+  }
 
-  Serial.print("\tDesired voltage: "); 
-  Serial.print(voltage - pwm.offset);
-  Serial.print("V || Output voltage: "); 
-  Serial.print(voltage);
-  Serial.println("V");
+  // get throttle percent from cmd_buff
+  for (i = 0; i < sizeof(pin)-1 && j < len; i++, j++) { 
+    if (cmd_buff[j] == '%'){ 
+      break;
+    }
+    percent[i] = cmd_buff[j];
+  }
 
-  ledcWrite(pwm.ledc_channel, pwm_level);
+  float v_percent = atof(percent);
+
+  if (pin[0] == 'p') {
+    if (pin[1] == '1') { 
+      Serial.print("PWM1: ");
+      pwm_percent(pwm1, 3.3, v_percent);
+    }
+    if (pin[1] == '2') {
+      Serial.print("PWM2: ");
+      pwm_percent(pwm2, 5.0, v_percent);
+    }
+  }
 }
 
 void setup() {
   Serial.begin(9600);
+  Serial.setTimeout(1500); // for slow typers
 
+  // set up PWM pins
   ledcSetup(pwm1.ledc_channel, pwm1.ledc_freq, pwm1.ledc_resolution);
   ledcAttachPin(pwm1.pin, pwm1.ledc_channel);
 
@@ -59,11 +71,18 @@ void setup() {
 }
 
 void loop() {
-  Serial.print("PWM1: ");
-  pwm_percent(pwm1, 3.3, 50.0);
+  char cmd_buff[32] = {0};
+  if (Serial.available() > 0) { 
+    Serial.readBytes(cmd_buff, sizeof(cmd_buff)-1); // buffer overflow a nono
 
-  Serial.print("PWM2: ");
-  pwm_percent(pwm2, 5.0, 0.0);
+    Serial.print("Command: ");
+    Serial.println(cmd_buff);
+    parse_cmd(cmd_buff, sizeof(cmd_buff));
 
-  delay(1000);
+    // zero out buffer 
+    for (int i = 0; i < sizeof(cmd_buff); i++) 
+      cmd_buff[i] = '\0';
+  }
+
+  delay(100);
 }
