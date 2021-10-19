@@ -1,28 +1,13 @@
 master:
-  container_name: master
-  command:
-    - roscore
-
-zed_publisher:
-    image: stereolabs/zed:3.5-gl-devel-cuda11.1-ubuntu20.04
-  container_name: zed_publisher
-  environment:
-    - "ROS_HOSTNAME=zed_publisher"
-    - "ROS_MASTER_URI=http://master:11311"
-  command: rosrun roscpp_tutorials publisher
-
-rtab_publisher:
-    image: introlab3it/rtabmap:20.04  
-  container_name: rtab_publisher
-  environment:
-    - "ROS_HOSTNAME=listener"
-    - "ROS_MASTER_URI=http://master:11311"
-  command: rosrun roscpp_tutorials listener
+    image: ros:noetic-ros-core-focal
+    container_name: master
+    command:
+        - roscore
 
 gazebo_publisher:
     image: gazebo:libgazebo11-focal 
-  container_name: gazebo_publisher
-  environment:
-    - "ROS_HOSTNAME=listener"
-    - "ROS_MASTER_URI=http://master:11311"
-  command: rosrun roscpp_tutorials listener
+    container_name: gazebo_publisher
+    environment:
+        - "ROS_HOSTNAME=gazebo_publisher"
+        - "ROS_MASTER_URI=http://master:11311"
+    command: source /gzserver_entrypoint.sh
