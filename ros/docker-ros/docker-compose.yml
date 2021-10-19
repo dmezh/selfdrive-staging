@@ -3,6 +3,7 @@ master:
     container_name: master
     command:
         - roscore
+<<<<<<< HEAD
 
 gazebo_publisher:
     image: gazebo:libgazebo11-focal 
@@ -30,11 +31,13 @@ rtab_publisher:
     - "ROS_HOSTNAME=listener"
     - "ROS_MASTER_URI=http://master:11311"
   command: rosrun roscpp_tutorials listener
+=======
+>>>>>>> gazebo-master network up; entrypoint failed
 
 gazebo_publisher:
     image: gazebo:libgazebo11-focal 
-  container_name: gazebo_publisher
-  environment:
-    - "ROS_HOSTNAME=listener"
-    - "ROS_MASTER_URI=http://master:11311"
-  command: rosrun roscpp_tutorials listener
+    container_name: gazebo_publisher
+    environment:
+        - "ROS_HOSTNAME=gazebo_publisher"
+        - "ROS_MASTER_URI=http://master:11311"
+    command: source /gzserver_entrypoint.sh
