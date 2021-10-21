@@ -20,42 +20,19 @@ struct PWM pwm2 = {
     .ledc_resolution = 9
 };
 
-// Example command: "p1:56.7%"
-// that sets pwm1 to 56.7%
+// Example command: "56.7%"
+// commands are assumed to be denoted perline and end with a percent
+// that sets the throttl to 56.7%
 void parse_cmd(char *cmd_buff, size_t len) { 
-  char pin[4] = {0};
-  char percent[8] = {0};
-  size_t i, j;  // i: index local buffer, j: index cmd_buff
+  float percent = atof(cmd_buff);
 
-  // get pin from cmd_buff
-  for (i = 0, j = 0; i < sizeof(pin)-1 && j < len; i++, j++) { 
-    if (cmd_buff[j] == ':'){ 
-      j++;
-      break;
-    }
-    pin[i] = cmd_buff[j];
-  }
+  Serial.print("PWM1: ");
+  pwm_percent(pwm1, 3.3, percent);
 
-  // get throttle percent from cmd_buff
-  for (i = 0; i < sizeof(pin)-1 && j < len; i++, j++) { 
-    if (cmd_buff[j] == '%'){ 
-      break;
-    }
-    percent[i] = cmd_buff[j];
-  }
+  Serial.print("PWM2: ");
+  pwm_percent(pwm2, 5.0, percent);
 
-  float v_percent = atof(percent);
-
-  if (pin[0] == 'p') {
-    if (pin[1] == '1') { 
-      Serial.print("PWM1: ");
-      pwm_percent(pwm1, 3.3, v_percent);
-    }
-    if (pin[1] == '2') {
-      Serial.print("PWM2: ");
-      pwm_percent(pwm2, 5.0, v_percent);
-    }
-  }
+  Serial.println("");
 }
 
 void setup() {
