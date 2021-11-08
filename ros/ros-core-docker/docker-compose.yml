@@ -1,19 +1,24 @@
-master:
-    image: ros:noetic-ros-core-focal
-    container_name: master
-    command:
-        - roscore
+version: '3'
 
-gazebo_publisher:
-    image: gazebo:gzserver11-focal 
-    container_name: gazebo_publisher
-    ports:
-        - "8000:8000"
-    environment:
-        - "ROS_MASTER_URI=http://master:11311"
+services:
+    master:
+        image: ros:noetic-ros-core-focal
+        container_name: master
+        tty: true
+        environment:
+        - 'ROS_HOSTNAME=master'
+        - 'ROS_MASTER_URI=http://master:11311'
+          #restart: unless-stopped
+        command: stdbuf -o L roscore
+
+    gazebo_publisher:
+        image: gazebo:gzserver11-focal 
+        container_name: gazebo_publisher
+        tty: true
+        ports:
+        - "8080:80"
+        environment:
         - "ROS_HOSTNAME=gazebo_publisher"
-          #command: 
-    #- run -d -v="/tmp/.gazebo/:/root/.gazebo/" --name=gazebo gazebo
-    #- docker exec -it gazebo bash     
-    #command: source /gzserver_entrypoint.sh
-
+        - "ROS_MASTER_URI=http://master:11311"
+        command: gzserver
+        #roslaunch gazebo_ros empty_world.launch
