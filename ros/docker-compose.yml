@@ -1,3 +1,4 @@
+# https://docs.docker.com/compose/gpu-support/
 version: '3'
 
 services:
@@ -36,3 +37,8 @@ services:
         command: roslaunch zed_wrapper zed.launch
         depends_on:
             - master
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
