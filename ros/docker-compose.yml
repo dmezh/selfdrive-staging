@@ -33,7 +33,7 @@ services:
             - 'ROS_MASTER_URI=http://master:11311'
         ports:
             - '11345:11345'
-        command: roslaunch gazebo_ros empty_world.launch
+        command: roslaunch turtlebot3_gazebo turtlebot3_house.launch
         restart: unless-stopped
         depends_on:
             - master
