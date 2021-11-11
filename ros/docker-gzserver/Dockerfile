@@ -36,16 +36,20 @@ EXPOSE 11345
 RUN apt update && apt install -y git
 
 RUN mkdir -p ros_ws/src &&\
-    git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git ros_ws/src/gazebo-packages
+    git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git ros_ws/src/gazebo-packages && \
+    git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git ros_ws/src/turtle
 
 RUN cd ros_ws && \
     source /opt/ros/noetic/setup.bash && \
     rosdep fix-permissions && \
     rosdep update && \
     rosdep install --from-paths . --ignore-src -y && \
-    catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release
+    catkin_make -DCATKIN_ENABLE_TESTING=0 -DCMAKE_BUILD_TYPE=Release && \
+    export TURTLEBOT3_MODEL=burger
 
 COPY ./entrypoint.sh /
+
+ENV TURTLEBOT3_MODEL='waffle_pi'
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
