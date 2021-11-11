@@ -3,6 +3,8 @@
 
 FROM stereolabs/zed:3.6-gl-devel-cuda11.4-ubuntu20.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 SHELL ["/bin/bash", "-c"]
 
 # ------------------------
@@ -10,14 +12,12 @@ SHELL ["/bin/bash", "-c"]
 # ------------------------
 # setup timezone
 RUN apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -q -y --no-install-recommends tzdata apt-utils
 
 # install packages
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
-    gnupg2 \
-    && rm -rf /var/lib/apt/lists/*
+    gnupg2
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
@@ -58,7 +58,8 @@ WORKDIR /app
 RUN apt update && apt install -y git 
 
 RUN mkdir -p ros_ws/src &&\
-    git clone --recursive https://github.com/stereolabs/zed-ros-wrapper.git ros_ws/src/zed
+    git clone --recursive https://github.com/stereolabs/zed-ros-wrapper.git ros_ws/src/zed && \
+    git clone --recursive https://github.com/stereolabs/zed-ros-examples.git ros_ws/src/zed-examples
 
 RUN cd ros_ws &&\
     source /opt/ros/noetic/setup.bash &&\
