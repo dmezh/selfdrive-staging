@@ -44,6 +44,6 @@ services:
         enviornment:
             - 'ROS_HOSTNAME=rtabmap'
             - 'ROS_MASTER_URI=http://master:11311'
-        command: $ roslaunch zed_rtabmap_example zed_rtabmap.launch
+        command: $ roslaunch rtabmap_ros zed_rtabmap.launch
         depends_on:
             - master
