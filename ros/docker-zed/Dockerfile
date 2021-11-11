@@ -9,9 +9,7 @@ SHELL ["/bin/bash", "-c"]
 # ------- ROS CORE -------
 # ------------------------
 # setup timezone
-RUN echo 'Etc/UTC' > /etc/timezone && \
-    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -q -y --no-install-recommends tzdata && \
     rm -rf /var/lib/apt/lists/*
 
