@@ -28,9 +28,9 @@ services:
         build: docker-rtabmap/.
         container_name: rtabmap
         tty: true
-        enviornment:
+        environment:
             - 'ROS_HOSTNAME=rtabmap'
             - 'ROS_MASTER_URI=http://master:11311'
-        command: $ roslaunch rtabmap_ros zed_rtabmap.launch
+        command: roslaunch rtabmap_ros rtabmap.launch
         depends_on:
             - master
