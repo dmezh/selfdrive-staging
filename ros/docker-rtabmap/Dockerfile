@@ -2,12 +2,19 @@
 # FROM ros:noetic-perception
 
 FROM ros:noetic-ros-base
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /app
+
 # install rtabmap packages
 ARG CACHE_DATE=2016-01-01
-RUN apt-get update && apt-get install -y \
+
+RUN apt-get update 
+
+RUN apt-get install -y \
     ros-noetic-rtabmap \
-    ros-noetic-rtabmap-ros \
-    && rm -rf /var/lib/apt/lists/
+    ros-noetic-rtabmap-ros
 
 COPY ./entrypoint.sh /
 
