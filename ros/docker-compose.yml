@@ -23,3 +23,17 @@ services:
         command: roslaunch rplidar_ros rplidar.launch
         depends_on:
             - master
+    
+    gzserver:
+        build: docker-gzserver/.
+        container_name: gzserver
+        tty: true
+        environment:
+            - 'ROS_HOSTNAME=gzserver'
+            - 'ROS_MASTER_URI=http://master:11311'
+        ports:
+            - '11345:11345'
+        command: roslaunch gazebo_ros empty_world.launch
+        restart: unless-stopped
+        depends_on:
+            - master
