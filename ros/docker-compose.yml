@@ -23,3 +23,16 @@ services:
         command: roslaunch rplidar_ros rplidar.launch
         depends_on:
             - master
+    
+    zedros:
+        build: docker-zedros/.
+        container_name: zedros
+        tty: true
+        enviornment:
+            - 'ROS_HOSTNAME=zedros'
+            - 'ROS_MASTER_URI=http://master:11311'
+        devices:
+            - '/dev/ttyUSB0:/dev/ttyUSB0'
+        command: roslaunch zed_wrapper zed.launch
+        depends_on:
+            - master
