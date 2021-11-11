@@ -1,60 +1,63 @@
 # https://www.stereolabs.com/docs/docker/install-guide-linux/
 # https://gitlab.com/nvidia/container-images/cuda/blob/master/dist/11.4.2/ubuntu2004/base/Dockerfile
-FROM ros:noetic-ros-base
 
-# # cuda stuff
-# ENV NVARCH x86_64
-# ENV NVIDIA_REQUIRE_CUDA "cuda>=11.4 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 brand=tesla,driver>=450,driver<451"
-# ENV NV_CUDA_CUDART_VERSION 11.4.108-1
-# ENV NV_CUDA_COMPAT_PACKAGE cuda-compat-11-4
-
-# ENV NVARCH sbsa
-# ENV NVIDIA_REQUIRE_CUDA "cuda>=11.4"
-# ENV NV_CUDA_CUDART_VERSION 11.4.108-1
-
-# RUN apt-get update && apt-get install apt-utils -y --no-install-recommends \
-#     gnupg2 curl ca-certificates && \
-#     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH}/7fa2af80.pub | apt-key add - && \
-#     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/${NVARCH} /" > /etc/apt/sources.list.d/cuda.list && \
-#     if [ ! -z ${NV_ML_REPO_ENABLED} ]; then echo "deb ${NV_ML_REPO_URL} /" > /etc/apt/sources.list.d/nvidia-ml.list; fi 
-
-# ENV CUDA_VERSION 11.4.2
-
-# # Required for nvidia-docker v1
-# RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
-#     && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-
-# ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-# ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
-
-# # nvidia-container-runtime
-# ENV NVIDIA_VISIBLE_DEVICES all
-# ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
-
-# # end of cuda stuff
+FROM stereolabs/zed:3.6-gl-devel-cuda11.4-ubuntu20.04
 
 SHELL ["/bin/bash", "-c"]
 
+# ------------------------
+# ------- ROS CORE -------
+# ------------------------
+# setup timezone
+RUN echo 'Etc/UTC' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    apt-get update && \
+    apt-get install -q -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt update && apt install -y wget
+# install packages
+RUN apt-get update && apt-get install -q -y --no-install-recommends \
+    dirmngr \
+    gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN source /etc/lsb-release && \
-    UBUNTU_VERSION=ubuntu${DISTRIB_RELEASE/./} && \
-    wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/cuda-${UBUNTU_VERSION}.pin && \
-    mv cuda-${UBUNTU_VERSION}.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub && \
-    add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/ /"
+# setup sources.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
 
-RUN apt update && apt install -y cuda-11-5
+# setup keys
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ENV ROS_DISTRO noetic
+
+# install ros packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-ros-core=1.5.0-1*
+
+# ------------------------
+# ------- ROS BASE -------
+# ------------------------
+# install bootstrap tools
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-vcstools
+
+# bootstrap rosdep
+RUN rosdep init && \
+  rosdep update --rosdistro $ROS_DISTRO
+
+# install ros packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-ros-base=1.5.0-1* 
 
 WORKDIR /app
 
 RUN apt update && apt install -y git 
-
-# install zed sdk
-RUN curl -L https://download.stereolabs.com/zedsdk/3.6/cu114/ubuntu20 --output zed-ros.run && \
-    chmod +x zed-ros.run && \
-    ./zed-ros.run -- silent
 
 RUN mkdir -p ros_ws/src &&\
     git clone --recursive https://github.com/stereolabs/zed-ros-wrapper.git ros_ws/src/zed
