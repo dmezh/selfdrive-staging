@@ -21,5 +21,20 @@ services:
         devices:
             - '/dev/ttyUSB0:/dev/ttyUSB0'
         command: roslaunch rplidar_ros rplidar.launch
+        restart: unless_stopped
+        depends_on:
+            - master
+    
+    gzserver:
+        image: gazebo:gzserver11-focal
+        container_name: gzserver
+        tty: true
+        environment:
+            - 'ROS_HOSTNAME=gzserver'
+            - 'ROS_MASTER_URI=http://master:11311'
+        ports:
+            - '11345:11345'
+        command: gzserver
+        restart: unless_stopped
         depends_on:
             - master
