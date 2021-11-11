@@ -38,7 +38,8 @@ services:
             - '/tmp/.X11-unix:/tmp/.X11-unix'
         # devices:
         #     - '/dev/ttyUSB0:/dev/ttyUSB0'
-        command: roslaunch zed_wrapper zed.launch
+        # command: roslaunch zed_wrapper zed.launch
+        command: roslaunch zed_display_rviz display_zed.launch
         depends_on:
             - master
         deploy:
