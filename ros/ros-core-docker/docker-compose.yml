@@ -16,7 +16,7 @@ services:
         container_name: gazebo_publisher
         tty: true
         ports:
-        - "8080:80"
+        - "11345:11345"
         environment:
         - "ROS_HOSTNAME=gazebo_publisher"
         - "ROS_MASTER_URI=http://master:11311"
