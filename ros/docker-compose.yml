@@ -28,9 +28,20 @@ services:
         build: docker-rtabmap/.
         container_name: rtabmap
         tty: true
+        privileged: true
         environment:
             - 'ROS_HOSTNAME=rtabmap'
             - 'ROS_MASTER_URI=http://master:11311'
+            - 'DISPLAY=$DISPLAY'
+            - 'QT_X11_NO_MITSHM=1'
+        volumes:
+            - '/tmp/.X11-unix:/tmp/.X11-unix'
+            - ~/.ros:/root
         command: roslaunch rtabmap_ros rtabmap.launch
         depends_on:
             - master
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
