@@ -1,8 +1,13 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # https://www.stereolabs.com/docs/docker/install-guide-linux/
 # https://gitlab.com/nvidia/container-images/cuda/blob/master/dist/11.4.2/ubuntu2004/base/Dockerfile
 <<<<<<< HEAD
+=======
+# https://www.stereolabs.com/docs/docker/install-guide-linux/
+# https://gitlab.com/nvidia/container-images/cuda/blob/master/dist/11.4.2/ubuntu2004/base/Dockerfile
+>>>>>>> 2be342a17e1822932117aa7d3930b6e2591cba3e
 
 FROM stereolabs/zed:3.6-gl-devel-cuda11.4-ubuntu20.04
 
@@ -63,6 +68,7 @@ RUN apt update && apt install -y git
 RUN mkdir -p ros_ws/src &&\
     git clone --recursive https://github.com/stereolabs/zed-ros-wrapper.git ros_ws/src/zed && \
     git clone --recursive https://github.com/stereolabs/zed-ros-examples.git ros_ws/src/zed-examples
+<<<<<<< HEAD
 =======
 =======
 # https://www.stereolabs.com/docs/docker/install-guide-linux/
@@ -141,6 +147,8 @@ RUN mkdir -p ros_ws/src &&\
     git clone --recursive https://github.com/stereolabs/zed-ros-wrapper.git ros_ws/src/zed && \
     git clone --recursive https://github.com/stereolabs/zed-ros-examples.git ros_ws/src/zed-examples
 >>>>>>> 1d61397... added noninteractive and removed commands removing apt packages
+=======
+>>>>>>> 2be342a17e1822932117aa7d3930b6e2591cba3e
 
 RUN cd ros_ws &&\
     source /opt/ros/noetic/setup.bash &&\
