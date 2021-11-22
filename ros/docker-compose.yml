@@ -74,3 +74,13 @@ services:
                     devices:
                         - capabilities: [gpu]
         restart: unless-stopped
+
+    gps:
+        build: docker-gps/.
+        container_name: rplgpsidar
+        tty: true
+        environment:
+            - 'ROS_HOSTNAME=gps'
+            - 'ROS_MASTER_URI=http://master:11311'
+        depends_on:
+            - master
