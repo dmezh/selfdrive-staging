@@ -5,7 +5,7 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /app
 
 # install dep and such
-RUN apt update
+RUN apt update && apt install -y git
 
 # clone ros repo
 RUN mkdir -p ros_ws/src &&\
