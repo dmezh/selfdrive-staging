@@ -32,6 +32,23 @@ services:
         command: roslaunch rplidar_ros view_rplidar.launch
         depends_on:
             - master
+
+    rosserial:
+        build: docker-rosserial/.
+        container_name: rosserial
+        tty: true
+        environment:
+            - 'ROS_HOSTNAME=rosserial'
+            - 'ROS_MASTER_URI=http://master:11311'
+            - 'DISPLAY=$DISPLAY'
+            - 'QT_X11_NO_MITSHM=1'
+        volumes:
+            - '/tmp/.X11-unix:/tmp/.X11-unix'
+        devices:
+            - '/dev/ttyACM0:/dev/ttyACM0'
+        # command: roslaunch rplidar_ros view_rplidar.launch
+        depends_on:
+            - master
     
     gazebo:
         build: docker-gazebo/.
@@ -69,7 +86,7 @@ services:
 #            - '/dev/ttyUSB0:/dev/ttyUSB0'
         # command: roslaunch zed_wrapper zed.launch
         # command: roslaunch zed_display_rviz display_zed.launch
-        command: roslaunch zed_rtabmap_example zed_rtabmap.launch
+        # command: roslaunch zed_rtabmap_example zed_rtabmap.launch
         depends_on:
             - master
         deploy:
