@@ -11,6 +11,7 @@
 extern const struct rate_funcs base_rf;
 extern const struct rate_funcs blink_hello_rf;
 extern const struct rate_funcs can_rf;
+extern const struct rate_funcs throttle_rf;
 
 /*
  * List of references to the task structs. Order matters - the modules will be
@@ -23,4 +24,5 @@ static const struct rate_funcs* task_list[] = {
     &base_rf,
     &blink_hello_rf,
     &can_rf,
+    &throttle_rf,
 };

@@ -6,6 +6,7 @@
  */
 #include <stdbool.h>
 typedef unsigned int uint;
+typedef float float32_t;
 
 /* 
  * COMMON MACROS
