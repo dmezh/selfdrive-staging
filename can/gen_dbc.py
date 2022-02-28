@@ -44,6 +44,11 @@ if __name__ == "__main__":
 
         for sig in data["signals"]:
             [(sname, sdata)] = sig.items()
+
+            if sname == "$empty":
+                msg_offset += int(sdata)
+                continue
+
             new, width = parse_signal(sname, sdata)
 
             signals.append(new)

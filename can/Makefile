@@ -17,7 +17,7 @@ default: igvc_can.dbc
 activate_venv: .venv
 	@. .venv/bin/activate
 
-igvc_can.dbc: gen_dbc.py can.yml | activate_venv
+igvc_can.dbc: gen_dbc.py can.yml activate_venv
 	python3 $(generator)
 
 clean:
