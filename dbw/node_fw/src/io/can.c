@@ -87,6 +87,8 @@ void can_send_msg(const twai_message_t *message) {
         // attempt recovery?
     }
 
+    static int count;
+
     if (count == 0x50) {
         const esp_partition_t* factory = esp_partition_find_first(
             ESP_PARTITION_TYPE_APP,
@@ -109,4 +111,5 @@ void can_send_msg(const twai_message_t *message) {
         esp_restart();
     }
 
+    count++;
 }
