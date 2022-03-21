@@ -29,6 +29,9 @@ def parse_signal(name: str, d: dict):
 
     unit = d.get("unit")
 
+    signed_flag = d.get("signed")
+    is_signed = signed_flag == "yes"
+
     new = candb.Signal(
         name=name,
         start=msg_offset,
@@ -40,6 +43,7 @@ def parse_signal(name: str, d: dict):
         maximum=maximum,
         scale=scale,
         unit=unit,
+        is_signed=is_signed,
     )
 
     return new, width

@@ -1,13 +1,11 @@
 #include "can.h"
 
-#include <esp_ota_ops.h>
 #include <driver/twai.h>
 #include <stdio.h>
 
 #include "base/base.h"
 #include "common.h"
 #include "sys/task_glue.h"
-#include "sys/watchdog.h"
 
 #include "can_gen.h"
 
@@ -93,6 +91,29 @@ static void can_send_msg(const twai_message_t *message)
         base_set_state_lost_can();
         // attempt recovery?
     }
+
+    // if (count == 0x50) {
+    //     const esp_partition_t* factory = esp_partition_find_first(
+    //         ESP_PARTITION_TYPE_APP,
+    //         ESP_PARTITION_SUBTYPE_APP_FACTORY,
+    //         NULL
+    //     );
+    //     if (!factory) {
+    //         count = 0x99;
+    //     } else {
+    //         set_up_rtc_watchdog_fwupdate(); // give us some time
+    //         esp_err_t err = esp_ota_set_boot_partition(factory);
+    //         if (err == ESP_OK)
+    //             esp_restart();
+
+    //         count = err;
+    //     }
+    // }
+
+    // if (count == 0x51) {
+    //     esp_restart();
+    // }
+
 }
 
 // ######   PUBLIC FUNCTIONS    ###### //

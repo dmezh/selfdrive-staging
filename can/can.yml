@@ -75,23 +75,23 @@ messages:
           description: Mode control command (0/1).
           width: 1
 
-- dbwUpdater_Update_Trigger:
-    id: 0xA0
+- dbwUpdater_Meta:
+    id: 0xF0
     cycletime: 100
 
     signals:
       - Trigger:
           description: Trigger the update.
           width: 1
-      - Filler1:
-          description: Filler.
-          width: 7
       - Begin:
           description: Begin the update.
           width: 1
+      - FinalSize:
+          description: Number of bytes in final image size.
+          width: 32
 
-- dbwUpdater_Update_Data:
-    id: 0xA1
+- dbwUpdater_Data:
+    id: 0xF1
     cycletime: 100
 
     signals:
@@ -102,21 +102,36 @@ messages:
           description: Image data.
           width: 40
 
-- dbwNode_Update_Response:
-    id: 0xA2
+- dbwBootloader_Data:
+    id: 0xF4
     cycletime: 100
 
     signals:
+      - RunningPartitionType:
+          description: Partition subtype (-1 if none).
+          signed: yes
+          width: 9
+      - BootPartitionType:
+          description: Partition subtype (-1 if none).
+          signed: yes
+          width: 9
+      - UpdatePartitionType:
+          description: Partition subtype (-1 if none).
+          signed: yes
+          width: 9
       - Ready:
           description: Ready to begin update.
           width: 1
-
-- dbwUpdater_Update_Done:
-    id: 0xA3
-    cycletime: 100
-
-    signals:
-      - FinalSize:
-          description: Number of bytes in final image size.
+      - OTAError:
+          description: OTA error.
+          width: 2
+          choices:
+            - OTA_NO_ERROR_YET
+            - OTA_BEGIN_ERR
+            - OTA_WRITE_ERR
+            - OTA_END_ERR
+            - OTA_SET_BOOT_PARTITION_ERR
+      - EspErrCode:
+          description: esp_err_t code from last error.
           width: 32
 

@@ -3,6 +3,12 @@
 #include <driver/twai.h>
 #include <stdio.h>
 
+#include "can_gen.h"
+
+/*
+ * Modified can driver from main node firmware.
+ */
+
 // ######        DEFINES        ###### //
 
 #define CAN_TX_GPIO 19
@@ -10,11 +16,50 @@
 
 // ######      PROTOTYPES       ###### //
 
+static void can_send_msg(const twai_message_t *message);
+
 // ######     PRIVATE DATA      ###### //
 
 static bool can_ready;
 
-// ######    RATE FUNCTIONS     ###### //
+uint messages_processed = 0; // shared
+
+static can_incoming_t in_msgs[25];
+static uint in_msgs_count = 0;
+
+// ######   PRIVATE FUNCTIONS   ###### //
+
+static void can_send_msg(const twai_message_t *message)
+{
+    esp_err_t r = twai_transmit(message, 0);
+
+    if (r == ESP_OK) {
+        // good
+    } else {
+        // bad
+    }
+}
+
+// ######   PUBLIC FUNCTIONS    ###### //
+
+void can_register_incoming_msg(const can_incoming_t cfg)
+{
+    in_msgs[in_msgs_count] = cfg;
+    in_msgs_count++;
+}
+
+void can_send_iface(const can_outgoing_t *i, const void *s)
+{
+    twai_message_t msg = {
+        .identifier = i->id,
+        .extd = i->extd,
+        .data_length_code = i->dlc,
+    };
+
+    i->pack(msg.data, s, 8);
+
+    can_send_msg(&msg);
+}
 
 void can_init()
 {
@@ -35,38 +80,27 @@ void can_init()
     }
 }
 
-void can_ping()
+void can_get(void *vTaskParameters)
 {
-    static uint8_t count = 0;
+    for (;;) {
+        twai_message_t msg;
+        esp_err_t result = twai_receive(&msg, 0);
 
-    if (!can_ready) {
-        // base_set_state_lost_can();
-        return;
+        switch (result) {
+            case ESP_ERR_TIMEOUT: // no messages in queue
+                continue;
+
+            case ESP_OK:
+                for (uint i = 0; i < in_msgs_count; i++) {
+                    if (in_msgs[i].id == msg.identifier) {
+                        in_msgs[i].unpack(in_msgs[i].out, msg.data, msg.data_length_code);
+                        messages_processed++;
+                    }
+                }
+                break;
+
+            default:
+                continue; // error
+        }
     }
-
-    twai_message_t message;
-    message.extd = 0;
-
-    message.identifier = 0x9;
-
-    message.data_length_code = 2;
-
-    message.data[0] = 0;
-    message.data[1] = count++;
-    message.data[2] = 0;
-    message.data[3] = 0;
-
-    esp_err_t r = twai_transmit(&message, 0);
-
-    // if (r == ESP_OK) {
-    //     base_set_state_good();
-    // } else {
-    //     base_set_state_lost_can();
-    //     // attempt recovery?
-    // }
-
 }
-
-// ######   PRIVATE FUNCTIONS   ###### //
-
-// ######   PUBLIC FUNCTIONS    ###### //
