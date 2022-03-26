@@ -1,7 +1,7 @@
-FROM debian:sid-slim
+FROM ubuntu:focal
 
 LABEL maintainer "Cooper IGVC <igvc@cooper.edu>"
-LABEL version "0.3.0"
+LABEL version "0.5.0"
 
 SHELL ["/bin/bash", "-c"]
 
