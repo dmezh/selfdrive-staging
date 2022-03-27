@@ -71,8 +71,8 @@ if __name__ == "__main__":
             msg_width += 1
 
         template_flag = data.get("template")
-        if template_flag == "true":
-            for t_id, t in enumerate(data["template_ids"]):
+        if template_flag is not None:
+            for t_id, t in enumerate(spec["templategroups"][template_flag]):
                 messages.append(
                     candb.Message(
                         frame_id=int(data["id"], 16) + t_id + 1,
