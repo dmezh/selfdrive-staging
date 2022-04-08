@@ -1,0 +1,13 @@
+include:
+  - template: 'Workflows/Merge-Request-Pipelines.gitlab-ci.yml'
+
+
+build:
+  image: docker:19.03.12
+  stage: build
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/igvc/selfdrive/ros/rtabmap:0.1 ros/docker/rtabmap/.
+    - docker push $CI_REGISTRY/igvc/selfdrive/ros/rtabmap:0.1
