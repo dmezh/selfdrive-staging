@@ -12,6 +12,41 @@ templategroups:
     - Encoder
 
 messages:
+
+- EpasAngle_Data:
+    id: 0x1E5
+    cycletime: 100
+
+    signals:
+      - Filler1:
+          description: Filler.
+          width: 16
+      - Position:
+          description: Wheel posititon (in counts).
+          width: 8
+          is_signed: True
+      - QuestionMvmtIndicator:
+          description: Unknown (movement indicator?)
+          width: 4
+      - FillerA:
+          description: Always zero.
+          width: 1
+      - StatusPing:
+          description: Regular status ping.
+          width: 2
+      - FillerB:
+          description: Always zero.
+          width: 1
+      - Question1:
+          description: Unknown 1.
+          width: 8
+      - Filler2:
+          description: Always zero.
+          width: 8
+      - Question3:
+          description: Unknown.
+          width: 16
+
 - dbwNode_Status:
     id: 0xE0
     cycletime: 100
